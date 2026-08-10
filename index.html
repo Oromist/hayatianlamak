@@ -1448,8 +1448,19 @@
         thumb.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX - curX; }, { passive:true });
         window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX - startX); });
         window.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX - startX); });
-        window.addEventListener('mouseup', () => { if (!dragging) return; dragging = false; if (!done && curX < getMax() * 0.9) setPos(0); });
-        window.addEventListener('touchend', () => { if (!dragging) return; dragging = false; if (!done && curX < getMax() * 0.9) setPos(0); });
+        function reset(){
+            curX = 0;
+            thumb.style.left = '5px';
+            fill.style.width = '56px';
+            track.style.opacity = '1';
+        }
+        window.addEventListener('mouseup', () => { if (!dragging) return; dragging = false; if (!done && curX < getMax() * 0.9) reset(); });
+        window.addEventListener('touchend', () => { if (!dragging) return; dragging = false; if (!done && curX < getMax() * 0.9) reset(); });
+
+        // Sayfaya geri dönünce (bfcache) slider'ı sıfırla
+        window.addEventListener('pageshow', function(e){
+            if (e.persisted) { done = false; reset(); }
+        });
     })();
 
     // Nav scroll shadow
